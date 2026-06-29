@@ -1544,10 +1544,28 @@ function captureCard(card) {
   const traitEl = card.querySelector('.card-trait');
   const visualEl = card.querySelector('.card-visual');
   const catEl = card.querySelector('.card-category');
+  const dimLabelEl = card.querySelector('.card-emotion-tag');
+  const originItems = card.querySelectorAll('.origin-item');
   const name = nameEl?.textContent || '非遗盲盒';
   const cat = catEl?.textContent || '';
   const trait = traitEl?.textContent || '';
+  const dimLabel = dimLabelEl?.textContent || '';
   const visualHTML = visualEl?.innerHTML || '';
+
+  // Extract origin info
+  let originHTML = '';
+  if (originItems.length) {
+    originHTML = '<div style="display:flex;gap:24px;padding-top:16px;border-top:1px solid rgba(0,0,0,0.06);margin-top:18px;flex-wrap:wrap;">';
+    originItems.forEach(el => {
+      const label = el.querySelector('.origin-label')?.textContent || '';
+      const value = el.querySelector('.origin-value')?.textContent || '';
+      originHTML += `<div style="display:flex;flex-direction:column;gap:2px;">
+        <span style="font-size:9px;letter-spacing:0.15em;color:#9c9688;">${label}</span>
+        <span style="font-family:Noto Serif SC,serif;font-size:15px;color:#0f0e0c;font-weight:700;">${value}</span>
+      </div>`;
+    });
+    originHTML += '</div>';
+  }
 
   const clone = document.createElement('div');
   clone.className = 'share-clone';
@@ -1557,11 +1575,15 @@ function captureCard(card) {
     <div class="share-strip" style="height:5px;width:100%;background:${card.querySelector('.card-color-strip')?.style.background || '#c9a84c'}"></div>
     <div style="padding:32px 28px 0;">
       <div style="font-size:11px;letter-spacing:0.25em;color:#9c9688;text-transform:uppercase;margin-bottom:6px;">${cat}</div>
-      <div style="font-size:13px;color:#c9a84c;margin-bottom:8px;">Heritage Me · 非遗型人格</div>
-      <div style="font-size:36px;font-weight:900;color:#0f0e0c;line-height:1.15;">${name}</div>
-      <div style="font-size:17px;line-height:1.7;color:#c0392b;margin-top:16px;padding:14px 16px;background:rgba(192,57,43,0.06);border-left:3px solid #c0392b;border-radius:0 10px 10px 0;">${trait}</div>
+      <div style="display:flex;align-items:center;justify-content:space-between;">
+        <div style="font-size:13px;color:#c9a84c;">Heritage Me · 非遗型人格</div>
+        <span style="font-size:11px;padding:3px 10px;border-radius:12px;background:rgba(201,168,76,0.12);color:#c9a84c;">${dimLabel}</span>
+      </div>
+      <div style="font-size:36px;font-weight:900;color:#0f0e0c;line-height:1.15;margin-top:6px;">${name}</div>
+      <div style="font-size:17px;line-height:1.7;color:#c0392b;margin-top:14px;padding:14px 16px;background:rgba(192,57,43,0.06);border-left:3px solid #c0392b;border-radius:0 10px 10px 0;">${trait}</div>
+      ${originHTML}
     </div>
-    <div style="height:280px;overflow:hidden;display:flex;align-items:center;justify-content:center;margin:16px 0;">${visualHTML}</div>
+    <div style="height:260px;overflow:hidden;display:flex;align-items:center;justify-content:center;margin:16px 0;">${visualHTML}</div>
   `;
 
   document.body.appendChild(clone);
